@@ -12,35 +12,55 @@ import java.util.ArrayList;
  */
 public class Branch {
     private ArrayList<QuestEvent> tasks;
-    int place;
-    int branchNum;
+    private ArrayList<Branch> child;
+    int place; 
+    QuestEvent parent;
+    boolean done;
     
-    public Branch(int branchNum){
+    public Branch( QuestEvent parent){
         place=0;
-        this.branchNum=branchNum;
         tasks=new ArrayList<>();
+        child=new ArrayList<>();
+        this.parent=parent;
     }
     public Branch(){
         place=0;
     }
     
-    /**
-     * This will prioritize Branch A's tasks over Branch B's tasks
-     * @param A
-     * @param B
-     * @return 
-     */
-    public static Branch merge(Branch A, Branch B){
-        ArrayList<QuestEvent> newTasks=new ArrayList<>();
-        for(int i=A.place; i<A.tasks.size(); i++){
-            newTasks.add(A.tasks.get(i));
-        }
-        for(int i=B.place; i<B.tasks.size(); i++){
-            newTasks.add(B.tasks.get(i));
-        }
-        
-        Branch b=new Branch();
-        b.tasks=newTasks;
-        return b;
+    public void branchOff(QuestEvent task){
+        tasks.add(task);
+        child.add(new Branch(task));
     }
+    
+    public void add(QuestEvent e){
+        tasks.add(e);
+    }
+    
+    public Branch getChild(int i){
+        if(i>=child.size()){
+            return null;
+        }else{
+            return child.get(i);
+        }
+    }
+    
+    public void Update(){
+        try{
+            if(tasks.get(place).isDone()){
+                place++;
+            }
+            tasks.get(place).Update();
+        }catch(IndexOutOfBoundsException e){
+            done=true;
+        }
+    }
+    
+    public boolean isDone(){
+        return done;
+    }
+    
+    private void downTheRabbitHoleUpdate(){
+        
+    }
+    
 }
